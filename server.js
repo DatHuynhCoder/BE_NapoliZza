@@ -9,6 +9,10 @@ const app = express();
 
 const PORT = process.env.PORT;
 
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to Ours Server</h1>');
+})
+
 app.get('/api/accounts', async (req, res) => {
   try {
     const accounts = await Account.find({});
