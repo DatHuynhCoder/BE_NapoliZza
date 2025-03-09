@@ -1,0 +1,19 @@
+{
+  "name": "be_napolizza",
+  "version": "1.0.0",
+  "description": "backend for app booking restaurant NapoliZza",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app" : "nodemon server.js"
+  },
+  "author": "Huynh Tan Dat",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1",
+    "nodemon": "^3.1.9"
+  }
+}
