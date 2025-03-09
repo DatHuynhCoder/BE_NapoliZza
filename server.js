@@ -11,8 +11,8 @@ const PORT = process.env.PORT;
 
 app.get('/api/accounts', async (req, res) => {
   try {
-    const products = await Account.find({});
-    res.status(200).json({ success: true, data: products });
+    const accounts = await Account.find({});
+    res.status(200).json({ success: true, data: accounts });
   } catch (error) {
     console.error("Error in get accounts: ", error.message);
     return res.status(500).json({ success: false, message: "Server error" });

@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const ReservationSchema = new mongoose.Schema({
   quantity: {type: Number, default: 0},
-  time: {type, Date, default: Date.now},
+  time: {type: Date, default: Date.now},
   status: {
     type: String,
     enum: ['pending','in-progress','completed','canceled'],
