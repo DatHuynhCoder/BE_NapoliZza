@@ -10,20 +10,20 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.get('/', (req, res) => {
-  res.send('<h1>Welcome to Ours Server</h1>');
+    res.send('<h1>Welcome to Ours Server</h1>');
 })
 
 app.get('/api/accounts', async (req, res) => {
-  try {
-    const products = await Account.find({});
-    res.status(200).json({ success: true, data: products });
-  } catch (error) {
-    console.error("Error in get accounts: ", error.message);
-    return res.status(500).json({ success: false, message: "Server error" });
-  }
+    try {
+        const products = await Account.find({});
+        res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        console.error("Error in get accounts: ", error.message);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
 })
 
 app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server start at http://localhost:${PORT}`);
+    connectDB();
+    console.log(`Server start at http://localhost:${PORT}`);
 })
