@@ -40,8 +40,8 @@ const AccountSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin','user','customer','restaurant staff']
-  }
+    enum: ['admin','user','customer','staff']
+  },
 },{
   timestamps: true
 });

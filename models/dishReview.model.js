@@ -12,7 +12,7 @@ const DishReviewSchema = new mongoose.Schema({
     ref: 'Dish',
     required: true,
   },
-  rating: {type: Number, default: 0}
+  rating: {type: Number, default: 0},
 },{
   timestamps: true
 });
