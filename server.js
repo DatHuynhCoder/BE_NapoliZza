@@ -3,20 +3,13 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/connect_DB.js';
 import { Account } from './models/account.model.js';
 import cors from 'cors';
-import { DishReview } from './models/dishReview.model.js';
-//import Dish model
-import fs from 'fs';
-import { Dish } from './models/dish.model.js';
-import upload from './middleware/multer.js';
-import cloudinary from './config/cloudinary.js';
-import { deleteTempFiles } from './utils/deleteTempFiles.js';
 
 //import customer routes 
 import commentRouter from './routes/customer/comment.router.js';
 import manageAccountRouter from './routes/customer/manageAccount.router.js';
 
 //import staff routes
-import dishRouter from './routes/staff/dish.route.js';
+import dishRouter from './routes/admin/dish.route.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -84,9 +77,9 @@ app.use('/customer/comment', commentRouter);
 //customer manage account api
 app.use('/customer/manageAccount', manageAccountRouter);
 
-// STAFF API HERE
+// ADMIN API HERE
 // dish api
-app.use('/staff/dish', dishRouter);
+app.use('/admin/dish', dishRouter);
 
 
 

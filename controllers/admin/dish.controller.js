@@ -22,11 +22,27 @@ export const createDish = async (req, res) => {
       }
     }
 
+    // Parse judgeContent if it's sent as a JSON string
+    let judgeContent = [];
+    if (req.body.judgeContent) {
+      try {
+        judgeContent = typeof req.body.judgeContent === "string" ? JSON.parse(req.body.judgeContent) : req.body.judgeContent;
+
+        // Ensure it's an array (important check)
+        if (!Array.isArray(judgeContent)) {
+          return res.status(400).json({ success: false, message: "Invalid judgeContent format. Must be an array." });
+        }
+      } catch (error) {
+        return res.status(400).json({ success: false, message: "Invalid judgeContent JSON format." });
+      }
+    }
+
+
     // Upload dish images to Cloudinary
-    const dishFiles = req.files.images || [];
-    const dishImgs = [];
-    for (const file of dishFiles) {
-      const foodImg = await cloudinary.uploader.upload(file.path, {
+    const dishFile = req.files.dishImg ? req.files.dishImg[0] : null;
+    let dishImg = null;
+    if (dishFile) {
+      const uploadedDishImg = await cloudinary.uploader.upload(dishFile.path, {
         folder: "NapoliZza/DishImages",
         transformation: [
           { width: 800, height: 800, crop: "limit" },
@@ -34,11 +50,11 @@ export const createDish = async (req, res) => {
           { fetch_format: "auto" }
         ]
       });
-      dishImgs.push({ url: foodImg.secure_url, public_id: foodImg.public_id });
+      dishImg = { url: uploadedDishImg.secure_url, public_id: uploadedDishImg.public_id };
     }
 
     // Upload ingredient images to Cloudinary
-    const ingredientFiles = req.files.ingredientImages || [];
+    const ingredientFiles = req.files.ingredientImgs || [];
     const ingredientImgs = [];
     for (const file of ingredientFiles) {
       const ingredientImg = await cloudinary.uploader.upload(file.path, {
@@ -53,19 +69,19 @@ export const createDish = async (req, res) => {
     }
 
     // Delete temp uploaded files
-    deleteTempFiles([...dishFiles, ...ingredientFiles]);
+    deleteTempFiles([dishFile])
+    deleteTempFiles(ingredientFiles);
 
     // Create new dish
     const newDish = await Dish.create({
       name: req.body.name,
       reviewNum: 0,
-      dishImgs: dishImgs,
+      dishImg: dishImg,
       ingredientImgs: ingredientImgs,
       available: req.body.available,
       description: req.body.description,
       ingredients: ingredients, // Use parsed ingredients
-      judgeHeader: req.body.judgeHeader,
-      judgeContent: req.body.judgeContent,
+      judgeContent: judgeContent,
       category: req.body.category,
       quantitySold: 0,
       price: req.body.price,
@@ -84,28 +100,26 @@ export const deleteDish = async (req, res) => {
   try {
     const dishID = req.params.id;
     const dish = await Dish.findById(dishID);
-  
+
     //check if dish exists
     if (!dish) {
       return res.status(404).json({ success: false, message: "Dish not found" });
     }
-  
-    //Delete all cloudinary dish images
-    if (dish.dishImgs && dish.dishImgs.length > 0) {
-      for (const img of dish.dishImgs) {
+
+    // Delete the cloudinary dish image
+    if (dish.dishImg && dish.dishImg.public_id) {
+      await cloudinary.uploader.destroy(dish.dishImg.public_id);
+    }
+
+    //Delete all cloudinary ingredient images
+    if (dish.ingredientImgs && dish.ingredientImgs.length > 0) {
+      for (const img of dish.ingredientImgs) {
         await cloudinary.uploader.destroy(img.public_id);
       }
     }
 
-    //Delete all cloudinary ingredient images
-    if(dish.ingredientImgs && dish.ingredientImgs.length > 0){
-      for(const img of dish.ingredientImgs){
-        await cloudinary.uploader.destroy(img.public_id);
-      }
-    }
-  
     await Dish.findByIdAndDelete(dishID);
-    res.status(200).json({ success: true, message: "Delete dish successfully" });    
+    res.status(200).json({ success: true, message: "Delete dish successfully" });
   } catch (error) {
     console.error("Error in delete dish: ", error.message);
     return res.status(500).json({ success: false, message: "Server error" });
@@ -133,41 +147,53 @@ export const updateDish = async (req, res) => {
       }
     }
 
+    //Parse judgeContent if it's a JSON string
+    let judgeContent = dish.judgeContent;
+    if (req.body.judgeContent) {
+      try {
+        judgeContent = typeof req.body.judgeContent === "string" ? JSON.parse(req.body.judgeContent) : req.body.judgeContent;
+
+        // Ensure it's an array
+        if (!Array.isArray(judgeContent)) {
+          return res.status(400).json({ success: false, message: "Invalid judgeContent format. Must be an array." });
+        }
+      } catch (error) {
+        return res.status(400).json({ success: false, message: "Invalid judgeContent JSON format." });
+      }
+    }
+
     // Update dish details
     const updateData = {
       name: req.body.name || dish.name,
       description: req.body.description || dish.description,
       ingredients: ingredients, // Use parsed ingredients
-      judgeHeader: req.body.judgeHeader || dish.judgeHeader,
-      judgeContent: req.body.judgeContent || dish.judgeContent,
+      judgeContent: judgeContent,
       available: req.body.available || dish.available,
       category: req.body.category || dish.category,
       price: req.body.price || dish.price,
       discount: req.body.discount || dish.discount,
     };
 
-    // Handle dish images
-    const dishFiles = req.files.images || [];
-    if (dishFiles.length > 0) {
-      // Delete old dish images from Cloudinary
-      for (const img of dish.dishImgs) {
-        await cloudinary.uploader.destroy(img.public_id);
+    // Handle dish image (only one image)
+    const dishFile = req.files.dishImg ? req.files.dishImg[0] : null;
+    if (dishFile) {
+      // Delete the old dish image from Cloudinary if it exists
+      if (dish.dishImg && dish.dishImg.public_id) {
+        await cloudinary.uploader.destroy(dish.dishImg.public_id);
       }
 
-      // Upload new dish images to Cloudinary
-      const dishImgs = [];
-      for (const file of dishFiles) {
-        const foodImg = await cloudinary.uploader.upload(file.path, {
-          folder: "NapoliZza/DishImages",
-          transformation: [
-            { width: 800, height: 800, crop: "limit" },
-            { quality: "auto" },
-            { fetch_format: "auto" }
-          ]
-        });
-        dishImgs.push({ url: foodImg.secure_url, public_id: foodImg.public_id });
-      }
-      updateData.dishImgs = dishImgs;
+      // Upload the new dish image to Cloudinary
+      const uploadedDishImg = await cloudinary.uploader.upload(dishFile.path, {
+        folder: "NapoliZza/DishImages",
+        transformation: [
+          { width: 800, height: 800, crop: "limit" },
+          { quality: "auto" },
+          { fetch_format: "auto" }
+        ]
+      });
+
+      // Update the dishImg field with the new image URL and public_id
+      updateData.dishImg = { url: uploadedDishImg.secure_url, public_id: uploadedDishImg.public_id };
     }
 
     // Handle ingredient images
@@ -195,7 +221,8 @@ export const updateDish = async (req, res) => {
     }
 
     // Delete temp uploaded files
-    deleteTempFiles([...dishFiles, ...ingredientFiles]);
+    deleteTempFiles([dishFile])
+    deleteTempFiles(ingredientFiles);
 
     // Update the dish in the database
     const updatedDish = await Dish.findByIdAndUpdate(dishID, updateData, { new: true });
