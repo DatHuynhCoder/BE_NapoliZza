@@ -5,7 +5,7 @@ const ReservationSchema = new mongoose.Schema({
   time: {type: Date, default: Date.now},
   status: {
     type: String,
-    enum: ['pending','in-progress','completed','canceled'],
+    enum: ['pending','confirmed','rejected','canceled'],
     default: 'pending'
   },
   totalPrice: {type: Number, required: true},
@@ -23,11 +23,6 @@ const ReservationSchema = new mongoose.Schema({
   accountId: {
     type: Schema.Types.ObjectId,
     ref: 'Account',
-    required: true
-  },
-  tableId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Table',
     required: true
   }
 },{
