@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const AccountSchema = new mongoose.Schema({
-  name_account:{
+  username:{
     type: String,
     required: true
   },
@@ -36,10 +37,23 @@ const AccountSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin','user','customer','staff']
+    enum: ['admin','customer','staff'],
+    default: 'customer'
   },
 },{
   timestamps: true
 });
+
+AccountSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+AccountSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 export const Account = mongoose.model('Account', AccountSchema);
