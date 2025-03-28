@@ -5,11 +5,14 @@ import { Account } from './models/account.model.js';
 import cors from 'cors';
 
 //import customer routes 
-import commentRouter from './routes/customer/comment.router.js';
-import manageAccountRouter from './routes/customer/manageAccount.router.js';
+import commentRouter from './routes/customer/comment.route.js';
+import manageAccountRouter from './routes/customer/manageAccount.route.js';
 
-//import staff routes
+//import admin routes
 import dishRouter from './routes/admin/dish.route.js';
+
+//import user route
+import accountActionRouter from './routes/user/accountAction.route.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -81,7 +84,9 @@ app.use('/customer/manageAccount', manageAccountRouter);
 // dish api
 app.use('/admin/dish', dishRouter);
 
-
+//USER API HERE
+// accountAction api
+app.use('/user/accountAction', accountActionRouter);
 
 app.listen(PORT, () => {
   connectDB();
