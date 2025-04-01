@@ -24,7 +24,8 @@ const ReservationSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Account',
     required: true
-  }
+  },
+  numGuests: Number,
 },{
   timestamps: true
 });

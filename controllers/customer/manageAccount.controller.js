@@ -4,7 +4,7 @@ import { deleteTempFiles } from "../../utils/deleteTempFiles.js";
 
 export const getAccountById = async (req, res) => {
   try {
-    const userID = req.params.id;
+    const userID = req.user.id;
     const customer = await Account.findById(userID);
     if (!customer) {
       return res.status(404).json({ success: false, message: "Customer not found" });
@@ -20,7 +20,7 @@ export const updateAccount = async (req, res) => {
   try {
     //Reminder: Please add phone validate later
     //get customer id from request
-    const userID = req.params.id;
+    const userID = req.user.id;
 
     //get update customer info from request
     const updateCustomer = req.body;
