@@ -87,9 +87,9 @@ export const handleLogin = async (req, res) => {
     }
 
     // Generate access token
-    const token = jwt.sign({ id: account._id, role: account.role }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign({ id: account._id, role: account.role }, process.env.JWT_SECRET, { expiresIn: "15m" });
     // Generate refresh token
-    const refreshtoken = jwt.sign({ id: account._id, role: account.role }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign({ id: account._id, role: account.role }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
 
     // Store refresh token in an HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
@@ -99,7 +99,7 @@ export const handleLogin = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
-    res.status(200).json({ success: true, data: account, token, refreshtoken });
+    res.status(200).json({ success: true, data: account, accessToken});
   } catch (error) {
     console.error("Error in login", error.message);
     return res.status(500).json({ success: false, message: "Server error" });

@@ -22,6 +22,7 @@ const app = express();
 //Add middleware to parse json
 app.use(express.json()); //parse json
 app.use(cors({origin: "http://localhost:5173", credentials: true})); //allow all cors
+app.use(cookieParser()); //parse cookie
 app.use(express.urlencoded({ extended: true })); //allow to handle url encoded data (form data)
 
 const PORT = process.env.PORT;

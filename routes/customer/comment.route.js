@@ -12,7 +12,8 @@ commentRouter.put('/:id', updateComment);
 
 //3. Delete comment
 commentRouter.delete('/:id', deleteComment);
-export default commentRouter;
 
 //4. get all comments
 commentRouter.get('/', getAllComment);
+
+export default commentRouter;
