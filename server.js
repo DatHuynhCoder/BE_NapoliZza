@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/connect_DB.js';
 import { Account } from './models/account.model.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 //import customer routes 
 import commentRouter from './routes/customer/comment.route.js';
@@ -20,7 +21,7 @@ const app = express();
 
 //Add middleware to parse json
 app.use(express.json()); //parse json
-app.use(cors()); //allow all cors
+app.use(cors({origin: "http://localhost:5173", credentials: true})); //allow all cors
 app.use(express.urlencoded({ extended: true })); //allow to handle url encoded data (form data)
 
 const PORT = process.env.PORT;
