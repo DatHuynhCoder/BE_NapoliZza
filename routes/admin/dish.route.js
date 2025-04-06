@@ -16,6 +16,7 @@ dishRouter.put('/:id', upload.fields([{ name: "dishImg", maxCount: 1 }, { name: 
 //get all dishes
 dishRouter.get('/', getAllDishes);
 
+//search dishes by keyword
 dishRouter.get('/search/:keywords', searchDishesByKeyword)
 
 export default dishRouter;

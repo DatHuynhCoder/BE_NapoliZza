@@ -22,11 +22,11 @@ const DishSchema = new mongoose.Schema({
     }
   ],
   reviewNum: { type: Number, default: 0 },
-  available: { type: Number, required: true },
+  available: { type: Number, default: 0 },
   category: { type: String },
   quantitySold: { type: Number, default: 0 },
   price: { type: Number, required: true },
-  discount: { type: Number, required: true },
+  discount: { type: Number, default: 0},
   rating: { type: Number, default: 0 }
 }, {
   timestamps: true
