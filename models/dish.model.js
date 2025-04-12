@@ -7,8 +7,8 @@ const DishSchema = new mongoose.Schema({
     url: String,
     public_id: String
   },
-  description: { type: String, required: true },
-  ingredients: { type: [String], default: [] },
+  description: { type: String},
+  ingredients: { type: [String]},
   ingredientImgs: [
     {
       url: String,
