@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, handleLogin, refreshToken } from '../../controllers/user/accountAction.controller.js';
+import { createUser, handleLogin, handleLogout, refreshToken } from '../../controllers/user/accountAction.controller.js';
 import { protect } from '../../middleware/authMiddleware.js';
 
 const accountActionRouter = express.Router();
@@ -14,6 +14,6 @@ accountActionRouter.post('/login', handleLogin);
 accountActionRouter.post('/refresh-token', refreshToken)
 
 //logout
-accountActionRouter.post('/logout', handleLogin)
+accountActionRouter.post('/logout', handleLogout)
 
 export default accountActionRouter;
