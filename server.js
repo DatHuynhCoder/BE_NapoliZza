@@ -15,6 +15,7 @@ import dishRouter from './routes/admin/dish.route.js';
 //import user route
 import accountActionRouter from './routes/user/accountAction.route.js';
 import reservationRouter from './routes/customer/reservation.route.js';
+import manageReservationRouter from './routes/admin/manageReservation.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -88,6 +89,7 @@ app.use('/customer/reservation', reservationRouter);
 // ADMIN API HERE
 // dish api
 app.use('/admin/dish', dishRouter);
+app.use('/admin/manageReservation', manageReservationRouter);
 
 //USER API HERE
 // accountAction api
