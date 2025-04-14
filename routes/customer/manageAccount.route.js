@@ -11,7 +11,7 @@ manageAccountRouter.get('/',protect, getAccountById);
 //update customer info
 manageAccountRouter.put('/', protect ,upload.single('image') , updateAccount)
 
-//3 delete customer
+//delete customer
 manageAccountRouter.delete('/:id', deleteAccount);
 
 export default manageAccountRouter;
