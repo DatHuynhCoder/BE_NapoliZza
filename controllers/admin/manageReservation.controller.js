@@ -1,6 +1,8 @@
 import { Reservation } from "../../models/reservation.model.js";
 import { Dish } from "../../models/dish.model.js";
 import { Restaurant } from "../../models/restaurant.model.js";
+import { Account } from "../../models/account.model.js";
+import sendMail from "../../utils/sendMail.js";
 
 export const getReservation = async (req, res) => {
   try {
@@ -34,6 +36,13 @@ export const updateReservationStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: "Cannot find reservation" });
     }
 
+    //get username and email
+    const account = await Account.findOne({ _id: reservation.accountId });
+
+    //check if account exist
+    if (!account) {
+      return res.status(400).json({ success: false, message: "Cannot find account" });
+    }
 
     //check if you can update status reservation
     if (reservation.status !== 'pending') {
@@ -54,7 +63,44 @@ export const updateReservationStatus = async (req, res) => {
           await dish.save();
         }
       }
-      
+
+      let paymentStatusText = "";
+      if(reservation.paymentStatus === 'pending') {
+        paymentStatusText = 'Thanh toán tại nhà hàng';
+      } else {
+        paymentStatusText = 'Qúy khách đã thanh toán online';
+      }
+
+      //HTML email content
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <h2>Xin chào ${account.username},</h2>
+          <p>Đơn đặt bàn của bạn đã được <strong>xác nhận</strong> thành công</p>
+
+          <p><strong>Mã đơn hàng: ${reservation._id}</strong></p>
+          <p><strong>Thời gian:</strong> ${new Date(reservation.time).toLocaleString()}</p>
+          <p><strong>Số người:</strong> ${reservation.quantity}</p>
+
+          <p><strong>Tổng tiền:</strong> ${reservation.totalPrice.toLocaleString()}đ</p>
+          <p><strong>Thanh toán:</strong> ${paymentStatusText}</p>
+
+          <p>Chúng tôi rất mong được phục vụ bạn tại nhà hàng ❤️</p>
+          <p style="margin-top: 20px;">Trân trọng,<br>Đội ngũ NapoliZza</p>
+        </div>
+      `;
+
+      //Send email to customer
+      const emailContent = {
+        to: account.email,
+        subject: "Xác nhận đặt bàn NapoliZza",
+        text: htmlContent
+      };
+
+      //send email to customer
+      const sendMailStatus = await sendMail(emailContent.to, emailContent.subject, emailContent.text);
+      if (!sendMailStatus) {
+        return res.status(500).json({ success: false, message: "Cannot send email" });
+      }
 
       //update restaurant profit
       const restaurant = await Restaurant.findOne({});

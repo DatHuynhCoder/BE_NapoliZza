@@ -4,7 +4,7 @@ import { Reservation } from "../../models/reservation.model.js";
 export const createReservation = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { date, time, numGuests, listDishes, note } = req.body;
+    const { date, time, numGuests, listDishes, note, paymentMethod } = req.body;
 
     // Validate required fields
     if (!date || !time || !numGuests) {
@@ -68,6 +68,7 @@ export const createReservation = async (req, res) => {
       note: note || "",
       accountId: userId,
       numGuests,
+      paymentMethod
     };
 
     const reservation = await Reservation.create(newReservation);
@@ -141,6 +142,35 @@ export const cancelReservation = async (req, res) => {
     return res.status(200).json({ success: true, message: "Cancel your reservation sucessfully!" });
   } catch (error) {
     console.error("Error in cancel reservation:", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+export const changePaymentMethod = async (req, res) => {
+  try {
+    const reservationId = req.params.id;
+    const userId = req.user.id;
+    const { paymentMethod } = req.body;
+
+    //Validate payment method
+    if (!paymentMethod || !['cash', 'online'].includes(paymentMethod)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method. Must be 'cash' or 'online'",
+      });
+    }
+
+    //Find reservation and update payment method
+    const reservation = await Reservation.findOneAndUpdate(
+      { _id: reservationId, accountId: userId },
+      { paymentMethod },
+      { new: true }
+    );
+
+    return res.status(200).json({ success: true, data: reservation });
+
+  } catch (error) {
+    console.error("Error in change payment method:", error.message);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }

@@ -11,14 +11,15 @@ import moment from 'moment';
 //import customer routes 
 import commentRouter from './routes/customer/comment.route.js';
 import manageAccountRouter from './routes/customer/manageAccount.route.js';
+import reservationRouter from './routes/customer/reservation.route.js';
 
 //import admin routes
 import dishRouter from './routes/admin/dish.route.js';
+import manageReservationRouter from './routes/admin/manageReservation.js';
+import manageRestaunrantRouter from './routes/admin/manageRestaunrant.route.js';
 
 //import user route
 import accountActionRouter from './routes/user/accountAction.route.js';
-import reservationRouter from './routes/customer/reservation.route.js';
-import manageReservationRouter from './routes/admin/manageReservation.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -93,6 +94,7 @@ app.use('/customer/reservation', reservationRouter);
 // dish api
 app.use('/admin/dish', dishRouter);
 app.use('/admin/manageReservation', manageReservationRouter);
+app.use('/admin/manageRestaunrant', manageRestaunrantRouter);
 
 //USER API HERE
 // accountAction api

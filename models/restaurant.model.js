@@ -6,39 +6,39 @@ const RestaurantSchema = new mongoose.Schema({
     required: true
   },
   address: {
-    street: { type: String, required: true},
-    city: {type: String, required: true},
-    borough: {type: String, required: true},
-    zip: {type: String}
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    borough: { type: String, required: true },
+    zip: { type: String }
   },
   profit: {
     type: Number,
     default: 0
   },
-  quantitySold: {type: Number, default: 0},
-  phone: {type: String, required: true},
-  starQuality: {type: Number, required: true},
+  quantitySold: { type: Number, default: 0 },
+  phone: { type: String, required: true },
+  starQuality: { type: Number, required: true },
   status: {
     type: String,
-    enum: ['pending','active','inactive','deny'],
+    enum: ['pending', 'active', 'inactive', 'deny'],
     default: 'pending'
   },
-  description: {type: String },
-  resImgs: [
+  description: { type: String },
+  resImg:
+  {
+    url: { type: String },
+    public_id: { type: String }
+  }
+  ,
+  numReview: { type: Number, default: 0 },
+  openingHours: [
     {
-      url : {type: String},
-      public_id: {type: String}
-    }
-  ],
-  numReview: {type: Number, default: 0},
-  openingHours:[
-    {
-      day: {type: String, required: true},
-      timeOpen: {type: String, required: true},
-      timeClose: {type: String, required: true}
+      day: { type: String, required: true },
+      timeOpen: { type: String, required: true },
+      timeClose: { type: String, required: true }
     }
   ]
-},{
+}, {
   timestamps: true
 });
 
