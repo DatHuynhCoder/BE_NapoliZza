@@ -26,6 +26,16 @@ const ReservationSchema = new mongoose.Schema({
     required: true
   },
   numGuests: Number,
+  paymentMethod: {
+    type: String,
+    enum: ['cash', 'online',],
+    default: 'cash'
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid'],
+    default: 'pending'
+  },
 },{
   timestamps: true
 });
