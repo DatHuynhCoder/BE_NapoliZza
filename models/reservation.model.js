@@ -28,8 +28,8 @@ const ReservationSchema = new mongoose.Schema({
   numGuests: Number,
   paymentMethod: {
     type: String,
-    enum: ['cash', 'online',],
-    default: 'cash'
+    enum: ['direct', 'online',],
+    default: 'direct'
   },
   paymentStatus: {
     type: String,
