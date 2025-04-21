@@ -1,6 +1,5 @@
 import express from 'express';
-import { createUser, handleLogin, handleLogout, refreshToken } from '../../controllers/user/accountAction.controller.js';
-import { protect } from '../../middleware/authMiddleware.js';
+import { changepassbyOTP, createUser, handleLogin, handleLogout, refreshToken, sendOTP, verifyOTP } from '../../controllers/user/accountAction.controller.js';
 
 const accountActionRouter = express.Router();
 
@@ -15,5 +14,14 @@ accountActionRouter.post('/refresh-token', refreshToken)
 
 //logout
 accountActionRouter.post('/logout', handleLogout)
+
+//send OTP
+accountActionRouter.post('/sendOTP', sendOTP)
+
+//verify OTP
+accountActionRouter.post('/verifyOTP', verifyOTP)
+
+//change pass by OTP
+accountActionRouter.post('/changepassbyOTP', changepassbyOTP)
 
 export default accountActionRouter;
