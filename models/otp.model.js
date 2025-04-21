@@ -4,7 +4,6 @@ const OTPSchema = new mongoose.Schema({
   otp: {
     type: String,
     required: true,
-    unique: true
   },
   email: {
     type: String,
@@ -12,11 +11,13 @@ const OTPSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: () => new Date(Date.now() + 2 * 60 * 1000), // expires in 2 minutes
-    index: { expires: 0 },
+    default: () => new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
   }
 },{
   timestamps: true
 });
+
+// Create a TTL index on the expiresAt field
+OTPSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const OTP = mongoose.model('OTP', OTPSchema);
