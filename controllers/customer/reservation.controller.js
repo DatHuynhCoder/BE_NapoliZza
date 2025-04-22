@@ -153,10 +153,10 @@ export const changePaymentMethod = async (req, res) => {
     const { paymentMethod } = req.body;
 
     //Validate payment method
-    if (!paymentMethod || !['cash', 'online'].includes(paymentMethod)) {
+    if (!paymentMethod || !['direct', 'online'].includes(paymentMethod)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid payment method. Must be 'cash' or 'online'",
+        message: "Invalid payment method. Must be 'direct' or 'online'",
       });
     }
 
