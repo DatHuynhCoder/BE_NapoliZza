@@ -7,7 +7,15 @@ import sendMail from "../../utils/sendMail.js";
 export const getReservation = async (req, res) => {
   try {
     const status = req.query.status;
-    const reservations = await Reservation.find({ status: status })
+
+    const filter = {};
+
+    //if we has status, we filter by status
+    if(status){
+      filter.status = status;
+    }
+
+    const reservations = await Reservation.find(filter)
       .populate("accountId", "name email phone")
       .populate("listDishes.dishId", "name price rating")
       .sort({ time: -1 });

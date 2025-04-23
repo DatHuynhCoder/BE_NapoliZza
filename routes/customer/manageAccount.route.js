@@ -2,19 +2,20 @@ import express from 'express';
 import { changePassword, deleteAccount, getAccountById, updateAccount } from '../../controllers/customer/manageAccount.controller.js';
 import upload from '../../middleware/multer.js';
 import { protect } from '../../middleware/authMiddleware.js';
+import { checkRole } from '../../middleware/checkRole.js';
 
 const manageAccountRouter = express.Router();
 
 //get account by id
-manageAccountRouter.get('/',protect, getAccountById);
+manageAccountRouter.get('/',protect, checkRole('customer'), getAccountById);
 
 //update account info
-manageAccountRouter.put('/', protect ,upload.single('image') , updateAccount)
+manageAccountRouter.put('/', protect ,checkRole('customer'),upload.single('image') , updateAccount)
 
 //change account password
-manageAccountRouter.put('/changepass', protect, changePassword);
+manageAccountRouter.put('/changepass', protect, checkRole('customer'), changePassword);
 
 //delete account
-manageAccountRouter.delete('/:id', deleteAccount);
+manageAccountRouter.delete('/:id',protect, checkRole('customer'), deleteAccount);
 
 export default manageAccountRouter;
