@@ -4,7 +4,7 @@ import { DishReview } from "../../models/dishReview.model.js";
 export const createComment = async (req, res) => {
   try {
     //get user id from request
-    const userID = req.params.id;
+    const userID = req.user.id;
     let { rating, reviewContent, dishId } = req.body;
 
     // check if rating is valid
@@ -49,7 +49,7 @@ export const createComment = async (req, res) => {
 
 export const updateComment = async (req, res) => {
   try {
-    const commentID = req.params.id;
+    const commentID = req.user.id;
     let { rating, reviewContent, dishId, accountId } = req.body;
 
     // Check if required fields are provided
@@ -111,7 +111,7 @@ export const updateComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const commentID = req.params.id;
+    const commentID = req.user.id;
     const { dishId, accountId } = req.body;
 
     // Check if required fields are provided
@@ -154,16 +154,6 @@ export const deleteComment = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in delete comment: ", error.message);
-    return res.status(500).json({ success: false, message: "Server error" });
-  }
-}
-
-export const getAllComment = async (req,res) => {
-  try {
-    const comments = await DishReview.find({});
-    res.status(200).json({ success: true, data: comments });
-  } catch (error) {
-    console.error("Error in get all comments: ", error.message);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }

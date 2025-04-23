@@ -17,6 +17,8 @@ import manageRestaunrantRouter from './routes/admin/manageRestaunrant.route.js';
 
 //import user route
 import accountActionRouter from './routes/user/accountAction.route.js';
+import displayDataRouter from './routes/user/displaydata.route.js';
+import searchRouter from './routes/user/search.route.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -96,6 +98,8 @@ app.use('/admin/manageRestaunrant', manageRestaunrantRouter);
 //USER API HERE
 // accountAction api
 app.use('/user/accountAction', accountActionRouter);
+app.use('/user/display', displayDataRouter);
+app.use('/user/search', searchRouter)
 
 app.listen(PORT, () => {
   connectDB();
