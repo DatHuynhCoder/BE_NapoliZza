@@ -7,15 +7,15 @@ import { checkRole } from '../../middleware/checkRole.js';
 const manageAccountRouter = express.Router();
 
 //get account by id
-manageAccountRouter.get('/',protect, checkRole('customer'), getAccountById);
+manageAccountRouter.get('/',protect, checkRole('admin','customer'), getAccountById);
 
 //update account info
-manageAccountRouter.put('/', protect ,checkRole('customer'),upload.single('image') , updateAccount)
+manageAccountRouter.patch('/', protect ,checkRole('admin','customer'),upload.single('image') , updateAccount)
 
 //change account password
-manageAccountRouter.put('/changepass', protect, checkRole('customer'), changePassword);
+manageAccountRouter.patch('/changepass', protect, checkRole('admin','customer'), changePassword);
 
 //delete account
-manageAccountRouter.delete('/:id',protect, checkRole('customer'), deleteAccount);
+manageAccountRouter.delete('/:id',protect, checkRole('admin','customer'), deleteAccount);
 
 export default manageAccountRouter;

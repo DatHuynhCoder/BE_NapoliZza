@@ -6,15 +6,15 @@ import { checkRole } from '../../middleware/checkRole.js';
 const reservationRouter = express.Router();
 
 //create a reservation
-reservationRouter.post('/', protect, checkRole('customer'), createReservation)
+reservationRouter.post('/', protect, checkRole('admin','customer'), createReservation)
 
 //get reservation by userId and status (if it has)
-reservationRouter.get('/', protect, checkRole('customer'), getReservationByUserId);
+reservationRouter.get('/', protect, checkRole('admin','customer'), getReservationByUserId);
 
 //cancel an reservation
-reservationRouter.delete("/:id", protect, checkRole('customer'), cancelReservation)
+reservationRouter.delete("/:id", protect, checkRole('admin','customer'), cancelReservation)
 
 //change payment method of reservation
-reservationRouter.put("/:id/payment-method", protect, checkRole('customer'), changePaymentMethod)
+reservationRouter.patch("/:id/payment-method", protect, checkRole('admin','customer'), changePaymentMethod)
 
 export default reservationRouter;
