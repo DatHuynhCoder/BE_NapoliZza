@@ -1,8 +1,6 @@
 import cloudinary from "../../config/cloudinary.js";
 import { Dish } from "../../models/dish.model.js";
 import { deleteTempFiles } from "../../utils/deleteTempFiles.js";
-import { search } from "../../utils/search.js";
-import { pagination } from "../../utils/pagination.js";
 
 export const createDish = async (req, res) => {
 	try {
@@ -199,7 +197,7 @@ export const updateDish = async (req, res) => {
 		}
 
 		// Handle ingredient images
-		const ingredientFiles = req.files.ingredientImages || [];
+		const ingredientFiles = req.files.ingredientImgs || [];
 		if (ingredientFiles.length > 0) {
 			// Delete old ingredient images from Cloudinary
 			for (const img of dish.ingredientImgs) {
