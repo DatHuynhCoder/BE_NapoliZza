@@ -13,6 +13,6 @@ dishRouter.post('/', upload.fields([{ name: "dishImg", maxCount: 1 }, { name: "i
 dishRouter.delete('/:id',protect, checkRole('admin'),deleteDish)
 
 //update dish
-dishRouter.put('/:id', upload.fields([{ name: "dishImg", maxCount: 1 }, { name: "ingredientImgs", maxCount: 2 }]),protect, checkRole('admin'), updateDish);
+dishRouter.patch('/:id', upload.fields([{ name: "dishImg", maxCount: 1 }, { name: "ingredientImgs", maxCount: 2 }]),protect, checkRole('admin'), updateDish);
 
 export default dishRouter;

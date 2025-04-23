@@ -49,11 +49,11 @@ export const createComment = async (req, res) => {
 
 export const updateComment = async (req, res) => {
   try {
-    const commentID = req.user.id;
-    let { rating, reviewContent, dishId, accountId } = req.body;
+    const userID = req.user.id;
+    let { rating, reviewContent, dishId, commentID } = req.body;
 
     // Check if required fields are provided
-    if (!commentID || !dishId || !accountId) {
+    if (!commentID || !dishId || !userID) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
@@ -70,7 +70,7 @@ export const updateComment = async (req, res) => {
     }
 
     // Find the comment to update
-    const comment = await DishReview.findOne({ _id: commentID, accountId: accountId, dishId: dishId });
+    const comment = await DishReview.findOne({ _id: commentID, accountId: userID, dishId: dishId });
 
     // If comment not found
     if (!comment) {
@@ -111,16 +111,16 @@ export const updateComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const commentID = req.user.id;
-    const { dishId, accountId } = req.body;
+    const userID = req.user.id;
+    const { dishId, commentID } = req.body;
 
     // Check if required fields are provided
-    if (!commentID || !dishId || !accountId) {
+    if (!commentID || !dishId || !userID) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
     // Find the comment to delete
-    const comment = await DishReview.findOne({ _id: commentID, accountId: accountId, dishId: dishId });
+    const comment = await DishReview.findOne({ _id: commentID, accountId: userID, dishId: dishId });
 
     // If comment not found
     if (!comment) {
