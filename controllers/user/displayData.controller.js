@@ -22,6 +22,12 @@ export const getAllCategory = async (req, res) => {
 export const getAllComments = async (req, res) => {
   try {
     const comments = await DishReview.find({});
+
+    //if cannot find comment
+    if (!comments) {
+      return res.status(404).json({ success: false, message: "Comments not found" });
+    }
+
     res.status(200).json({ success: true, data: comments });
   } catch (error) {
     console.error("Error get comments", error.message);
@@ -94,7 +100,41 @@ export const getDishes = async (req, res) => {
       }
     });
   } catch (error) {
-  console.error("Error in get all dishes: ", error.message);
-  return res.status(500).json({ success: false, message: "Server error" });
+    console.error("Error in get all dishes: ", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
 }
+
+export const getDishById = async (req, res) => {
+  try {
+    const dishID = req.params.id;
+    const dish = await Dish.findById(dishID);
+
+    //Check if dish exist
+    if (!dish) {
+      return res.status(404).json({ success: false, message: `Dish with id: ${dishID} not found` });
+    }
+
+    res.status(200).json({ success: true, data: dish })
+  } catch (error) {
+    console.error("Error in get dishe: ", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+export const getCommentsByDishId = async (req, res) => {
+  try {
+    const dishID = req.params.id;
+    const comments = await DishReview.find({ dishId: dishID });
+
+    //if cannot find comment
+    if (!comments) {
+      return res.status(404).json({ success: false, message: "Comments not found" });
+    }
+
+    res.status(200).json({ success: true, data: comments })
+  } catch (error) {
+    console.error("Error in get dishe: ", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
 }
