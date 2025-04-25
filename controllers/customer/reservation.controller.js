@@ -29,6 +29,7 @@ export const createReservation = async (req, res) => {
     for (const item of listDishes) {
       const { dishId, quantity: qty } = item;
 
+      //Check if dishId and quantity are valid
       if (!dishId || typeof qty !== "number" || qty <= 0) {
         return res.status(400).json({
           success: false,
@@ -36,11 +37,20 @@ export const createReservation = async (req, res) => {
         });
       }
 
+      //Check if can find dish
       const foundDish = await Dish.findById(dishId);
       if (!foundDish) {
         return res.status(404).json({
           success: false,
           message: `Dish not found with ID ${dishId}`,
+        });
+      }
+
+      //Check if avaiable > quantity
+      if( foundDish.available < qty) {
+        return res.status(400).json({
+          success: false,
+          message: `Dish with ID ${dishId} is not available in quantity ${qty}`,
         });
       }
 
