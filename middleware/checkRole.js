@@ -3,7 +3,7 @@ export const checkRole = (...allowedRoles) => {
       if (!req.user || !allowedRoles.includes(req.user.role)) {
           return res.status(403).json({ message: "Access denied" });
       }
-      console.log("Authorized role: ", req.user.role);
+      // console.log("Authorized role: ", req.user.role);
       next();
   };
 };
