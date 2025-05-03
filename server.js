@@ -194,6 +194,7 @@ app.post('/create-payment-link', async (req, res) => {
     items: items,
     returnUrl: `${YOUR_DOMAIN}/`,
     cancelUrl: `${YOUR_DOMAIN}/ve-chung-toi`,
+    // ex: http://localhost:5173/ve-chung-toi?code=00&id=66f03c8a0ca848df8906678a7c8fb52c&cancel=true&status=CANCELLED&orderCode=174629713782093
   };
   console.log("check order info: ", order)
   const paymentLink = await payos.createPaymentLink(order);
