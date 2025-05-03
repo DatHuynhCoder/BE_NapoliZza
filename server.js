@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import crypto from 'crypto';
 import axios from 'axios';
 import moment from 'moment';
+import PayOS from "@payos/node";
 
 //import customer routes 
 import commentRouter from './routes/customer/comment.route.js';
@@ -34,6 +35,8 @@ app.use(cookieParser()); //parse cookie
 app.use(express.urlencoded({ extended: true })); //allow to handle url encoded data (form data)
 
 const PORT = process.env.PORT;
+
+const payos = new PayOS('bb520963-30b7-4f6a-b03b-22b41fa4bb7d', 'a4546b7a-be26-4579-92c1-11cef8ada9a2', '5876d916797c540648b31e3d97c4dff0bb34136b8c60422f7a688f7428471276')
 
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to Ours Server</h1>');
@@ -104,67 +107,104 @@ app.use('/user/accountAction', accountActionRouter);
 app.use('/user/display', displayDataRouter);
 app.use('/user/search', searchRouter)
 
-const config = {
-  app_id: '2553',
-  key1: 'PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL',
-  key2: 'kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz',
-  endpoint: 'https://sb-openapi.zalopay.vn/v2/create',
-  callback_url: 'http://localhost:5000/zalopay-callback',
-};
+// const config = {
+//   app_id: '2553',
+//   key1: 'PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL',
+//   key2: 'kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz',
+//   endpoint: 'https://sb-openapi.zalopay.vn/v2/create',
+//   callback_url: 'http://localhost:5000/zalopay-callback',
+// };
 
-app.post('/zalopay', async (req, res) => {
-  const { tableId, comboName, amount } = req.body;
-  const embed_data = {
-    tableId,
-    comboName,
-  };
+// app.post('/zalopay', async (req, res) => {
+//   const { tableId, comboName, amount } = req.body;
+//   const embed_data = {
+//     tableId,
+//     comboName,
+//   };
 
-  const items = [{}]; // có thể thêm danh sách món ăn nếu cần
-  const transID = Math.floor(Math.random() * 1000000);
-  const order = {
-    app_id: config.app_id,
-    app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
-    app_user: 'demo_user',
-    app_time: Date.now(),
-    item: JSON.stringify(items),
-    embed_data: JSON.stringify(embed_data),
-    amount,
-    description: `Đặt bàn: ${comboName}`,
-    bank_code: '',
-    callback_url: config.callback_url,
-  };
+//   const items = [{}]; // có thể thêm danh sách món ăn nếu cần
+//   const transID = Math.floor(Math.random() * 1000000);
+//   const order = {
+//     app_id: config.app_id,
+//     app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
+//     app_user: 'demo_user',
+//     app_time: Date.now(),
+//     item: JSON.stringify(items),
+//     embed_data: JSON.stringify(embed_data),
+//     amount,
+//     description: `Đặt bàn: ${comboName}`,
+//     bank_code: '',
+//     callback_url: config.callback_url,
+//   };
 
-  // Tạo chữ ký
-  const data = `${order.app_id}|${order.app_trans_id}|${order.app_user}|${order.amount}|${order.app_time}|${order.embed_data}|${order.item}`;
-  order.mac = crypto.createHmac('sha256', config.key1).update(data).digest('hex');
+//   // Tạo chữ ký
+//   const data = `${order.app_id}|${order.app_trans_id}|${order.app_user}|${order.amount}|${order.app_time}|${order.embed_data}|${order.item}`;
+//   order.mac = crypto.createHmac('sha256', config.key1).update(data).digest('hex');
 
-  try {
-    const result = await axios.post(config.endpoint, null, { params: order });
-    console.log('✅ ZaloPay order created:', result.data);
-    return res.json({ order_url: result.data.order_url });
-  } catch (err) {
-    console.error(err.response?.data || err);
-    return res.status(500).json({ error: 'Lỗi tạo đơn hàng ZaloPay' });
-  }
-});
+//   try {
+//     const result = await axios.post(config.endpoint, null, { params: order });
+//     console.log('✅ ZaloPay order created:', result.data);
+//     return res.json({ order_url: result.data.order_url });
+//   } catch (err) {
+//     console.error(err.response?.data || err);
+//     return res.status(500).json({ error: 'Lỗi tạo đơn hàng ZaloPay' });
+//   }
+// });
 
 // use ngrok to call this
-app.post('/zalopay-callback', express.json(), (req, res) => {
-  const dataStr = req.body.data;
-  const reqMac = req.body.mac;
-  const mac = crypto.createHmac('sha256', config.key2).update(dataStr).digest('hex');
+// app.post('/zalopay-callback', express.json(), (req, res) => {
+//   const dataStr = req.body.data;
+//   const reqMac = req.body.mac;
+//   const mac = crypto.createHmac('sha256', config.key2).update(dataStr).digest('hex');
 
-  if (reqMac !== mac) {
-    return res.status(400).send('invalid callback');
-  }
+//   if (reqMac !== mac) {
+//     return res.status(400).send('invalid callback');
+//   }
 
-  const data = JSON.parse(dataStr);
-  console.log('✅ ZaloPay payment success:', data);
+//   const data = JSON.parse(dataStr);
+//   console.log('✅ ZaloPay payment success:', data);
 
-  // 👉 Cập nhật trạng thái đơn hàng trong DB tại đây
+//   // 👉 Cập nhật trạng thái đơn hàng trong DB tại đây
 
-  res.json({ return_code: 1, return_message: 'success' });
-});
+//   res.json({ return_code: 1, return_message: 'success' });
+// });
+const YOUR_DOMAIN = 'http://localhost:5173';
+
+app.post('/create-payment-link', async (req, res) => {
+  const {
+    reservationid,
+    amount,
+    description,
+    items
+  } = req.body;
+  let date = new Date()
+  // Generate a unique orderCode using timestamp and random number
+  const orderCode = Number(`${Date.now()}${Math.floor(10 + Math.random() * 90)}`); // Example: 16832012345671234
+  const order = {
+    orderCode: orderCode,
+    amount: amount,
+    description: "Thanh đoán đơn đặt bàn",
+    items: [
+      {
+        name: "Pizza",
+        quantity: 1,
+        price: 2000,
+      },
+    ],
+    returnUrl: `${YOUR_DOMAIN}/`,
+    cancelUrl: `${YOUR_DOMAIN}/ve-chung-toi`,
+  };
+  console.log("check order info: ", order)
+  const paymentLink = await payos.createPaymentLink(order);
+  return res.json({ url: paymentLink.checkoutUrl });
+})
+
+// webhook-url using ngrok
+// example: https://22a5-2402-800-6394-7899-2913-cbda-3cd6-8e52.ngrok-free.app/payment-callback
+app.post('/payment-callback', async (req, res) => {
+  console.log("check payment callback: ", req.body)
+  return res.json()
+})
 
 app.listen(PORT, () => {
   connectDB();
