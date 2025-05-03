@@ -177,20 +177,21 @@ app.post('/create-payment-link', async (req, res) => {
     description,
     items
   } = req.body;
-  let date = new Date()
+  // items: [
+  //   {
+  //     name: "Pizza",
+  //     quantity: 1,
+  //     price: 2000,
+  //   },
+  // ],
+
   // Generate a unique orderCode using timestamp and random number
   const orderCode = Number(`${Date.now()}${Math.floor(10 + Math.random() * 90)}`); // Example: 16832012345671234
   const order = {
     orderCode: orderCode,
     amount: amount,
     description: "Thanh đoán đơn đặt bàn",
-    items: [
-      {
-        name: "Pizza",
-        quantity: 1,
-        price: 2000,
-      },
-    ],
+    items: items,
     returnUrl: `${YOUR_DOMAIN}/`,
     cancelUrl: `${YOUR_DOMAIN}/ve-chung-toi`,
   };
