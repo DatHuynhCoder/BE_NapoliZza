@@ -47,7 +47,7 @@ export const createReservation = async (req, res) => {
       }
 
       //Check if avaiable > quantity
-      if( foundDish.available < qty) {
+      if (foundDish.available < qty) {
         return res.status(400).json({
           success: false,
           message: `Dish with ID ${dishId} is not available in quantity ${qty}`,
@@ -181,6 +181,25 @@ export const changePaymentMethod = async (req, res) => {
 
   } catch (error) {
     console.error("Error in change payment method:", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+export const changePaymentStatus = async (req, res) => {
+  try {
+    const reservationId = req.params.id;
+    const userId = req.user.id;
+    const paymentStatus = "paid"
+
+    const reservation = await Reservation.findOneAndUpdate(
+      { _id: reservationId, accountId: userId },
+      { paymentStatus },
+      { new: true }
+    );
+
+    return res.status(200).json({ success: true, data: reservation });
+  } catch (error) {
+    console.error("Error in change payment status:", error.message);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
