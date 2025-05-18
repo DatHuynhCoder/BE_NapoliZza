@@ -192,9 +192,9 @@ app.post('/create-payment-link', async (req, res) => {
     amount: amount,
     description: "Thanh đoán đơn đặt bàn",
     items: items,
-    returnUrl: `${YOUR_DOMAIN}/`,
+    returnUrl: `${YOUR_DOMAIN}?reservationid=${reservationid}`,
     // ex: http://localhost:5173/?code=00&id=41161ff2b8ec4c1bb486321677354626&cancel=false&status=PAID&orderCode=174636829966485
-    cancelUrl: `${YOUR_DOMAIN}/ve-chung-toi`,
+    cancelUrl: `${YOUR_DOMAIN}/theo-doi-dat-ban?reservationid=${reservationid}`,
     // ex: http://localhost:5173/ve-chung-toi?code=00&id=66f03c8a0ca848df8906678a7c8fb52c&cancel=true&status=CANCELLED&orderCode=174629713782093
   };
   console.log("check order info: ", order)
