@@ -125,7 +125,7 @@ export const getDishById = async (req, res) => {
 export const getCommentsByDishId = async (req, res) => {
   try {
     const dishID = req.params.id;
-    const comments = await DishReview.find({ dishId: dishID });
+    const comments = await DishReview.find({ dishId: dishID }).populate('accountId','username email avatar');
 
     //if cannot find comment
     if (!comments) {
