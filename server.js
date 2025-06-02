@@ -1,12 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { connectDB } from './config/connect_DB.js';
-import { Account } from './models/account.model.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import crypto from 'crypto';
-import axios from 'axios';
-import moment from 'moment';
 import PayOS from "@payos/node";
 
 //import customer routes 
@@ -23,8 +19,6 @@ import manageRestaunrantRouter from './routes/admin/manageRestaunrant.route.js';
 import accountActionRouter from './routes/user/accountAction.route.js';
 import displayDataRouter from './routes/user/displaydata.route.js';
 import searchRouter from './routes/user/search.route.js';
-import { Dish } from './models/dish.model.js';
-import { normalizeString } from './utils/normalizeString.js';
 
 dotenv.config(); // You can access .env vars globally
 
@@ -64,24 +58,6 @@ app.use('/admin/manageRestaunrant', manageRestaunrantRouter);
 app.use('/user/accountAction', accountActionRouter);
 app.use('/user/display', displayDataRouter);
 app.use('/user/search', searchRouter)
-
-//update unsigndish
-app.use('/updateUnsignDish', async (req, res) => {
-  try {
-    const dishes = await Dish.find();
-    for (const dish of dishes) {
-      const originalName = dish.name;
-      const normalized = normalizeString(originalName);
-
-      dish.unsignName = normalized;
-      await dish.save();
-    }
-    res.status(200).json({ success: true, message: "Unsign dish names updated successfully" });
-  } catch (error) {
-    console.error("Error updating unsign dish:", error.message);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
 
 app.listen(PORT, () => {
   connectDB();
