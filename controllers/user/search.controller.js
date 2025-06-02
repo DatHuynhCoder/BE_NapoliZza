@@ -20,7 +20,7 @@ export const searchDishes = async (req, res) => {
     if (name) {
       const searchOptions = search(name);
       if (searchOptions) {
-        query.name = { $regex: searchOptions.regex };
+        query.unsignName = { $regex: searchOptions.regex };
       }
     }
 
